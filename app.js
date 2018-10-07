@@ -29,10 +29,16 @@ function getFromDB(code, scope){
   var obj
   switch(scope){
     case 'country':
-      //some quantum shit here
+      //return a country
+      Country.find({key:code.substring(0,2)},(err,country)=>{
+        if(!err){
+          obj.country = country
+          obj.states = country.states
+        }
+      })
       break
     case 'state':
-      //some quantum shit here
+      //return a state
       break
     case 'institution':
       //some quantum shit here
@@ -77,7 +83,7 @@ app.get("/:location",(req,res)=>{
   } 
   if(loca>=6){
     //TODO:get state from db and push it to the geoObj
-    geoObj.state = getFromDB(code, 'state')
+    geoObj.state = obj.states[code.substring(2,6)];
     geoObj.mark = 'institution'
   }
   if(loca>=11){
@@ -95,7 +101,7 @@ app.get("/:location",(req,res)=>{
     geoObj.floor = getFromDB(code, 'floor')
     geoObj.mark = 'room'
   }
-  if(coca>=25){
+  if(loca>=25){
     //TODO:get room from db and push it to the geoObj
     geoObj.room = getFromDB(code, 'room')
   }
@@ -115,29 +121,29 @@ app.get("/location/new", (req,res)=>{
 
 //location create route
 app.post("/location", (req,res)=>{
-  Country.create({name:req.body.country},(err,country)=>{
+  Country.create({name:req.body.country,key:req.body.country_key},(err,country)=>{
     if(!err){
-     State.create({name:req.body.state},(err,state)=>{
+     State.create({name:req.body.state,key:req.body.state_key},(err,state)=>{
        if(!err){
          //associate state with country
           country.states.push(state)
           country.save()
-          Institution.create({name:req.body.institution},(err,institution)=>{
+          Institution.create({name:req.body.institution,key:req.body.institution_key},(err,institution)=>{
             if(!err){
               //associate institution with state
               state.institutions.push(institution)
               state.save()
-              Building.create({name:req.body.building},(err,building)=>{
+              Building.create({name:req.body.building,key:req.body.building_key},(err,building)=>{
                 if(!err){
                   //associate building with institution
                   institution.buildings.push(building)
                   institution.save()
-                  Floor.create({name:req.body.floor},(err,floor)=>{
+                  Floor.create({name:req.body.floor,key:req.body.floor_key},(err,floor)=>{
                     if(!err){
                       //associate floor with building
                       building.floors.push(floor)
                       building.save()
-                      Room.create({name:req.body.room},(err,room)=>{
+                      Room.create({name:req.body.room,key:req.body.room_key},(err,room)=>{
                         if(!err){
                           //associate room with building
                           floor.rooms.push(room)

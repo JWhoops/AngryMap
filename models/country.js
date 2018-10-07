@@ -2,6 +2,7 @@ var mongoose = require("mongoose")
 //moongoose model config
 var countrySchema = new mongoose.Schema({
   name:String,
+  key:String,
   created: {type:Date, default: Date.now},
   states:[
     {
