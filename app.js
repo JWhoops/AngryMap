@@ -26,8 +26,6 @@ mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true })
 
 //location route
 app.get("/:location",(req,res)=>{
-  //set the header to application/json
-  res.setHeader('Content-Type', 'application/json')
   //get the geoHash code
   var code = req.params.location.toString()
   //get the length of location
@@ -65,8 +63,8 @@ app.get("/:location",(req,res)=>{
     //TODO:get room from db and push it to the geoObj
     geoObj.room = getRoomFromDB(code)
   }
-  //stringify and send the object
-  res.send(JSON.stringify(geoObj))
+  //send the object(Express exclusive)
+  res.json(geoObj)
 })
 
 //root route
