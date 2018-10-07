@@ -19,37 +19,54 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 
 // DB config
-mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true });
+mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true })
 
 // seed the databse with fake data
 // seedDB()
 
 //location route
 app.get("/:location",(req,res)=>{
+  //set the header to application/json
+  res.setHeader('Content-Type', 'application/json')
+  //get the geoHash code
+  var code = req.params.location.toString()
   //get the length of location
-  var loca = req.params.location.toString().length
-  switch(loca){
-    case 2: //country
-      res.send("country")
-      break
-    case 6: //state
-      res.send("state")
-      break
-    case 11: //institution
-      res.send("institution")
-      break
-    case 16: //building
-      res.send("building")
-      break
-    case 20: //floor
-      res.send("floor")
-      break
-    case 25: //room
-      res.send("room")
-      break
-    default:
-      res.redirect("/") 
+  var loca = code.length
+  var geoObj = {geoHash:code}
+  if(loca<2){
+    //TODO:error page or send an error info
+    //res.redirect('/')
   }
+  /* Annotation:
+   * If there is no key correspons to the key from the geoHash code
+   * throw error and redirect to an error page or send an error info.
+   */
+  if(loca>=2){
+    //TODO:get country from db and push it to the geoObj
+    geoObj.country = getCountryFromDB(code)
+  } 
+  if(loca>=6){
+    //TODO:get state from db and push it to the geoObj
+    geoObj.state = getStateFromDB(code)
+  }
+  if(loca>=11){
+    //TODO:get institution from db and push it to the geoObj
+    geoObj.institution = getInstitutionFromDB(code)
+  }
+  if(loca>=16){
+    //TODO:get building from db and push it to the geoObj
+    geoObj.building = getBuildingFromDB(code)
+  }
+  if(loca>=20){
+    //TODO:get floor from db and push it to the geoObj
+    geoObj.floor = getFloorFromDB(code)
+  }
+  if(coca>=25){
+    //TODO:get room from db and push it to the geoObj
+    geoObj.room = getRoomFromDB(code)
+  }
+  //stringify and send the object
+  res.send(JSON.stringify(geoObj))
 })
 
 //root route
@@ -70,7 +87,7 @@ app.post("/location", (req,res)=>{
        if(!err){
          //associate state with country
           country.states.push(state)
-          country.save();
+          country.save()
           Institution.create({name:req.body.institution},(err,institution)=>{
             if(!err){
               //associate institution with state
@@ -91,7 +108,7 @@ app.post("/location", (req,res)=>{
                           //associate room with building
                           floor.rooms.push(room)
                           floor.save()
-                          res.send("successful uploaded")
+                          res.send("uploaded successfully")
                         }
                       })
                     }
