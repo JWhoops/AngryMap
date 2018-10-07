@@ -32,8 +32,8 @@ app.get("/:location",(req,res)=>{
   var loca = code.length
   var geoObj = {geoHash:code}
   if(loca<2){
-    //TODO:error page or send an error info
-    //res.redirect('/')
+    //invalid geoHash code, return 500
+    res.json(500, { error: "invalid geoHash code." }) 
   }
   /* Annotation:
    * If there is no key correspons to the key from the geoHash code
