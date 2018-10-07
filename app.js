@@ -24,6 +24,35 @@ mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true })
 // seed the databse with fake data
 // seedDB()
 
+
+function getFromDB(code, scope){
+  var obj
+  switch(scope){
+    case 'country':
+      //some quantum shit here
+      break
+    case 'state':
+      //some quantum shit here
+      break
+    case 'institution':
+      //some quantum shit here
+      break
+    case 'building':
+      //some quantum shit here
+      break
+    case 'floor':
+      //some quantum shit here
+      break
+    case 'room':
+      //some quantum shit here
+      break
+    default:
+      return {error:'undefined scope'}
+  }     
+  return obj
+}
+
+
 //location route
 app.get("/:location",(req,res)=>{
   //get the geoHash code
@@ -38,30 +67,37 @@ app.get("/:location",(req,res)=>{
   /* Annotation:
    * If there is no key correspons to the key from the geoHash code
    * throw error and redirect to an error page or send an error info.
+   * mark indicates the information needed to append to the geoObj, or 
+   * append the information right in the if statement...
    */
   if(loca>=2){
     //TODO:get country from db and push it to the geoObj
-    geoObj.country = getCountryFromDB(code)
+    geoObj.country = getFromDB(code, 'country')
+    geoObj.mark = 'state'
   } 
   if(loca>=6){
     //TODO:get state from db and push it to the geoObj
-    geoObj.state = getStateFromDB(code)
+    geoObj.state = getFromDB(code, 'state')
+    geoObj.mark = 'institution'
   }
   if(loca>=11){
     //TODO:get institution from db and push it to the geoObj
-    geoObj.institution = getInstitutionFromDB(code)
+    geoObj.institution = getFromDB(code, 'institution')
+    geoObj.mark = 'building'
   }
   if(loca>=16){
     //TODO:get building from db and push it to the geoObj
-    geoObj.building = getBuildingFromDB(code)
+    geoObj.building = getFromDB(code, 'building')
+    geoObj.mark = 'floor'
   }
   if(loca>=20){
     //TODO:get floor from db and push it to the geoObj
-    geoObj.floor = getFloorFromDB(code)
+    geoObj.floor = getFromDB(code, 'floor')
+    geoObj.mark = 'room'
   }
   if(coca>=25){
     //TODO:get room from db and push it to the geoObj
-    geoObj.room = getRoomFromDB(code)
+    geoObj.room = getFromDB(code, 'room')
   }
   //send the object(Express exclusive)
   res.json(geoObj)
