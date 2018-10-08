@@ -24,89 +24,35 @@ mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true })
 // seed the databse with fake data
 // seedDB()
 
-
-function getFromDB(code, scope){
-  var obj
-  switch(scope){
-    case 'country':
-      //return a country
-      Country.find({key:code.substring(0,2)},(err,country)=>{
-        if(!err){
-          obj.country = country
-          obj.states = country.states
-        }
-      })
-      break
-    case 'state':
-      //return a state
-      break
-    case 'institution':
-      //some quantum shit here
-      break
-    case 'building':
-      //some quantum shit here
-      break
-    case 'floor':
-      //some quantum shit here
-      break
-    case 'room':
-      //some quantum shit here
-      break
-    default:
-      return {error:'undefined scope'}
-  }     
-  return obj
-}
-
-
 //location route
 app.get("/:location",(req,res)=>{
   //get the geoHash code
   var code = req.params.location.toString()
   //get the length of location
   var loca = code.length
-  var geoObj = {geoHash:code}
-  if(loca<2){
-    //invalid geoHash code, return 500
-    res.json(500, { error: "invalid geoHash code." }) 
+  //how to return json in express? res.json(obj) you are welcome
+  switch(loca){
+    case 2: //country
+      //some quantum sheet here
+      break
+    case 6: //state
+      //some quantum sheet here
+      break
+    case 11: //institution
+      //some quantum db operations here
+      break
+    case 16: //building
+      //quantum
+      break//break is a good game!
+    case 20: //floor
+      //i need to finish my paper by tuesday
+      break
+    case 25: //room
+      //so maybe i should work on that tomorrow
+      break
+    default:
+      //500 json
   }
-  /* Annotation:
-   * If there is no key correspons to the key from the geoHash code
-   * throw error and redirect to an error page or send an error info.
-   * mark indicates the information needed to append to the geoObj, or 
-   * append the information right in the if statement...
-   */
-  if(loca>=2){
-    //TODO:get country from db and push it to the geoObj
-    geoObj.country = getFromDB(code, 'country')
-    geoObj.mark = 'state'
-  } 
-  if(loca>=6){
-    //TODO:get state from db and push it to the geoObj
-    geoObj.state = obj.states[code.substring(2,6)];
-    geoObj.mark = 'institution'
-  }
-  if(loca>=11){
-    //TODO:get institution from db and push it to the geoObj
-    geoObj.institution = getFromDB(code, 'institution')
-    geoObj.mark = 'building'
-  }
-  if(loca>=16){
-    //TODO:get building from db and push it to the geoObj
-    geoObj.building = getFromDB(code, 'building')
-    geoObj.mark = 'floor'
-  }
-  if(loca>=20){
-    //TODO:get floor from db and push it to the geoObj
-    geoObj.floor = getFromDB(code, 'floor')
-    geoObj.mark = 'room'
-  }
-  if(loca>=25){
-    //TODO:get room from db and push it to the geoObj
-    geoObj.room = getFromDB(code, 'room')
-  }
-  //send the object(Express exclusive)
-  res.json(geoObj)
 })
 
 //root route
