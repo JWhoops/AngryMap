@@ -33,7 +33,14 @@ app.get("/:location",(req,res)=>{
   //how to return json in express? res.json(obj) you are welcome
   switch(loca){
     case 2: //country
-      //some quantum sheet here
+      Country.findOne({"key": code.substring(0,2)},{"name":true,"states":true,"_id":false},(err,country)=>{
+        if(!err){
+          State.find({"_id":country.states},{"name":true},(err,states)=>{
+            if(!err)
+            res.json({country,states})
+          })
+        }
+      })
       break
     case 6: //state
       //some quantum sheet here
