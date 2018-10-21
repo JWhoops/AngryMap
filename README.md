@@ -6,7 +6,7 @@ TODO:
 </ol>
 
 <hr>
-
+<pre>
 STR: US WISC UWMAD MSHUM F001 2250x
 LEN: 2    4         5             5            4       5
 
@@ -63,4 +63,4 @@ Y:456}
 
 Annotation:
 Room 可以是房间(hash='1150b', type='room', function='lecture')，也可以是楼层入口(hash='ent01', type='entrance', function='entrance door')，也可以是楼梯(hash='sta01', type='stair', function='stair to floor 1')，也可以是电梯(hash='ele01', type='elevator', function='elevator to xx')。。。
-
+</pre>
