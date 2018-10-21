@@ -9,8 +9,12 @@ const express     = require("express"),
       Room        = require("./models/room"),
       mongoose    = require("mongoose"),
       //other funcitons
-      bodyParser  = require("body-parser")
-      // seedDB   = require("./seeds")
+      bodyParser  = require("body-parser"),
+      seedDB = require("./seeds")
+      
+      //database test=================
+      seedDB() //seed db with data
+      //================================
       
 //app configs~~~~~~~~~~~~~~~~~~~~~~~
 const app = express()
@@ -74,6 +78,9 @@ app.get("/location/new", (req,res)=>{
   res.render("new")
 })
 
+
+
+
 //location create route
 app.post("/location", (req,res)=>{
   Country.create({name:req.body.country,key:req.body.country_key},(err,country)=>{
@@ -88,7 +95,7 @@ app.post("/location", (req,res)=>{
               //associate institution with state
               state.institutions.push(institution)
               state.save()
-              Building.create({name:req.body.building,key:req.body.building_key},(err,building)=>{
+              Building.create({lat:req.body.lat,lng:req.body.lng,name:req.body.building,key:req.body.building_key},(err,building)=>{
                 if(!err){
                   //associate building with institution
                   institution.buildings.push(building)
