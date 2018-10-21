@@ -1,0 +1,23 @@
+{
+	"microwaves":[
+	{ "type": "Microwave", "key": "14ENG", "description": "In the basement, Room 85.  Two microwaves available."},
+	{ "type": "Microwave", "key": "CGCEN", "description": "In Carson's Market"},
+	{ "type": "Microwave", "key": "CHDHL", "description": "In Rheta's Market area" },
+	{ "type": "Microwave", "key": "HNCHL", "description": "In Room 1250, with the vending machines in the southeast corner of the room" },
+	{ "type": "Microwave", "key": "COMSS", "description": "In the basement below the south entrance to the building, next to Room B203" },
+	{ "type": "Microwave", "key": "SSCHL", "description": "On the first floor in the vending machine room near the elevators." },
+	{ "type": "Microwave", "key": "DEJHL", "description": "In the Bean & Creamery area" },
+	{ "type": "Microwave", "key": "EGRSB", "description": "On the north side of the 2nd floor lounge area, near the skyway to Material Sciences." },
+	{ "type": "Microwave", "key": "GODEC", "description": "On the first floor between the Bean & Creamery and the eating area." },
+	{ "type": "Microwave", "key": "GRAHL", "description": "In the vending machine room on the first floor, east half of the building." },
+	{ "type": "Microwave", "key": "GLMHB", "description": "Hidden between a vending machine and the east wall next to the stairs on the east side of the building near the courtyard." },
+	{ "type": "Microwave", "key": "LAWBD", "description": "In the Sidebar Cafe on the first floor in the west half of the building." },
+	{ "type": "Microwave", "key": "WTRHL", "description": "In the Dining area" },
+	{ "type": "Microwave", "key": "MDCEN", "description": "In the basement lounge past the Badger Market" },
+	{ "type": "Microwave", "key": "SMITH", "description": "Near Newell's Deli" },
+	{ "type": "Microwave", "key": "SBLIB", "description": "On the lower level, near the vending machines." },
+	{ "type": "Microwave", "key": "333EC", "description": "3rd floor, East Campus Mall, in the lounge area southwest of the elevator bank" },
+	{ "type": "Microwave", "key": "UNIST", "description": "1308 W. Dayton St, 3rd floor, Room 353.  This room is called the Pantry and is located right behind the back door of the Landmark Room, down the hall at the top of the stairs on the third floor.  The room is normally open, but if locked, request for it to be opened at the front desk on the 1st floor." }
+	]
+}
+
