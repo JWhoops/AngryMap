@@ -11,7 +11,7 @@ const dropC = (c) => {
   c.deleteOne({}, function(err) {if(!err)console.log('removed one collection')});
 }
 
-const screwBD = (bd) => {
+const insertBuildings = (bds) => {
   //drop all collections before inserting data----------------------------------
     dropC(Country)
     dropC(State)
@@ -20,7 +20,6 @@ const screwBD = (bd) => {
     dropC(Floor)
     dropC(Room)
   //----------------------------------------------------------------------------
-    
     Country.create({name:"United States",key:"US"},(err,country)=>{
     if(!err){
      State.create({name:"Wisconsin",key:"WI"},(err,state)=>{
@@ -33,20 +32,23 @@ const screwBD = (bd) => {
               //associate institution with state
               state.institutions.push(institution)
               state.save()
-              //data field======================================================
-              Building.create({utilities:bd.utilities,
-                                         lat:bd.lat,
-                                         lng:bd.lng,
-                                         name:bd.name,
-                                         key:bd.key},
-              //================================================================
+              
+              bds.forEach((building)=>{
+                    //insert building into db
+                              Building.create({utilities:building.utilities,
+                                         //coordinates是反过来的
+                                         lat:building.coordinates[1],
+                                         lng:building.coordinates[0],
+                                         name:building.name,
+                                         key:building.key},
                                          (err,building)=>{
                 if(!err){
                   //associate building with institution
                   institution.buildings.push(building)
                   institution.save()
-                  console.log("insert 1 data")
-                }
+                  console.log("created: " + building.name)
+                  }
+                })
               })
             }
           })  
@@ -55,16 +57,33 @@ const screwBD = (bd) => {
     }
   })
 }
+
+// Read Asynchrously
+ const getJsonObj = (path) => { 
+  var fs = require("fs");
+  console.log("\n *START READING JSON* \n");
+  var content = JSON.parse(fs.readFileSync(path));
+  return content;
+ }
+
+const seedDB =()=>{
+  //read buildings and microwaves json files
+  let buildings =  getJsonObj('./test_jsons/buildings.json').buildings
+  let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
   
-function seedDB(){
-  /*example
-  how to insert a building object to database*/
-  var utility = {type:"Microwave",description:"a microave in Rheta",picture:"www.asdfasdf.com/asdf.png"}
-  screwBD({utilities:[utility],
-         lat: 53.335,
-         lng: 78.422,
-         name: "Rheta",
-         key: "RH"})
-}
+  buildings.forEach((building)=>{
+    let utility = []
+    microwaves.forEach((microwave)=>{
+      if(building.key === microwave.key){
+        //push utilites into building's utilities array using same key
+        utility.push(microwave)
+      }
+    })
+    building.utilities = utility //assign utility to buildings
+    })
+    insertBuildings(buildings) //insert building list into database
+  }
+  
+
 
 module.exports = seedDB

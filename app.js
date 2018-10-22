@@ -79,8 +79,6 @@ app.get("/location/new", (req,res)=>{
 })
 
 
-
-
 //location create route
 app.post("/location", (req,res)=>{
   Country.create({name:req.body.country,key:req.body.country_key},(err,country)=>{

@@ -1,8 +1,6 @@
 TODO:
 <ol>
-<li>update the routers</li>
-<li>upload test floor maps</li>
-<li>...</li>
+<li>update routers that will return different json file</li>
 </ol>
 
 <hr>
