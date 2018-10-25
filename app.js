@@ -13,7 +13,7 @@ const express     = require("express"),
       seedDB = require("./seeds")
       
       //database test=================
-      seedDB() //seed db with data
+      //seedDB() //seed db with data
       //================================
       
 //app configs~~~~~~~~~~~~~~~~~~~~~~~
@@ -26,7 +26,7 @@ app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true })
 
 // seed the databse with fake data
-// seedDB()
+  seedDB()
 
 //location route
 app.get("/:location",(req,res)=>{
@@ -55,8 +55,15 @@ app.get("/:location",(req,res)=>{
       //some quantum db operations here
       break
     case 16: //building
-      //quantum
-      break//break is a good game!
+          console.log(code.substring(0,2))
+          console.log(code.substring(2,6))
+          console.log(code.substring(6,11))
+          console.log(code.substring(11,17))
+                 Building.findOne({"key":code.substring(11,17)},{"key":true,"utilities":true,"_id":false,"name":true},(err,foundBuilding)=>{
+                  // let utilities = foundBuilding.utilities
+                  res.json({foundBuilding})
+                })
+      break
     case 20: //floor
       //i need to finish my paper by tuesday
       break

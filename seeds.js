@@ -8,7 +8,7 @@ var mongoose    = require("mongoose"),
 
 //drop a collection
 const dropC = (c) => {
-  c.deleteOne({}, function(err) {if(!err)console.log('removed one collection')});
+  c.remove({}, function(err) {if(!err)console.log('removed one collection')});
 }
 
 const insertBuildings = (bds) => {
@@ -22,12 +22,12 @@ const insertBuildings = (bds) => {
   //----------------------------------------------------------------------------
     Country.create({name:"United States",key:"US"},(err,country)=>{
     if(!err){
-     State.create({name:"Wisconsin",key:"WI"},(err,state)=>{
+     State.create({name:"Wisconsin",key:"WISC"},(err,state)=>{
        if(!err){
          //associate state with country
           country.states.push(state)
           country.save()
-          Institution.create({name:"University of Wisconsin-Madison",key:"UWM"},(err,institution)=>{
+          Institution.create({name:"University of Wisconsin-Madison",key:"UWMAD"},(err,institution)=>{
             if(!err){
               //associate institution with state
               state.institutions.push(institution)
