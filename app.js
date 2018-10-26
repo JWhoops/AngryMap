@@ -26,36 +26,61 @@ app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 mongoose.connect("mongodb://parktower702:parktower702@ds123783.mlab.com:23783/utility_map",{ useNewUrlParser: true })
 
 // seed the databse with fake data
-  seedDB()
+//seedDB()
+
+//fking dumb icon
+app.get('/favicon.ico', (req, res) => res.status(204));
 
 //location route
 app.get("/:location",(req,res)=>{
+
   //get the geoHash code
   var code = req.params.location.toString()
+
   //get the length of location
   var loca = code.length
+
   //how to return json in express? res.json(obj) you are welcome
   switch(loca){
     case 2: //country
-      Country.find({"key": code.substring(0,2)},{"key":true, "name":true,"states":true,"_id":false},(err,country)=>{
+      Country.findOne({"key": code.substring(0,2)},{"key":true, "name":true,"states":true,"_id":false},(err,foundCountry)=>{
         if(!err){
-          State.find({"_id":country.states},{"key":true, "_id":false, "name":true},(err,foundStates)=>{
+          State.find({"_id":foundCountry.states},{"key":true, "_id":false, "name":true},(err,foundStates)=>{
             if(!err){
-              country.states = undefined
-              res.json({country,foundStates})
+              foundCountry.states = undefined
+              res.jsonp({foundCountry,foundStates})
             } 
           })
         }
       })
       break
     case 6: //state
-      //some quantum sheet here
+      State.findOne({"key": code.substring(2,6)},{"key":true, "name":true,"institutions":true,"_id":false},(err,foundState)=>{
+        if(!err){
+          Institution.find({"_id":foundState.institutions},{'_id':false,"buildings": false},(err,foundInstitutions)=>{
+            if(!err){
+              foundState.institutions = undefined
+              res.jsonp({foundState,foundInstitutions})
+            } 
+          })
+        }
+      })
       break
     case 11: //institution
-      //some quantum db operations here
+      //some quantum shitty db operations here
+      Institution.findOne({"key": code.substring(6,11)},{"key":true, "name":true,"buildings":true,"_id":false},(err,foundInstitution)=>{
+        if(!err){
+          Building.find({"_id":foundInstitution.buildings},(err,foundBuildings)=>{
+            if(!err){              
+              foundInstitution.buildings = undefined
+              res.jsonp({foundInstitution,foundBuildings})
+            } 
+          })
+        }
+      })
       break
     case 16: //building
-       Building.findOne({"key":code.substring(11,17)},{"key":true,"utilities":true,"_id":false,"name":true},(err,foundBuilding)=>{
+       Building.find({"key":code.substring(11,17)},(err,foundBuilding)=>{
         // let utilities = foundBuilding.utilities
         res.jsonp(foundBuilding)
       })

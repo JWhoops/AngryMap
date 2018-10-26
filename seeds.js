@@ -32,7 +32,6 @@ const insertBuildings = (bds) => {
               //associate institution with state
               state.institutions.push(institution)
               state.save()
-              
               bds.forEach((building)=>{
                     //insert building into db
                               Building.create({utilities:building.utilities,
