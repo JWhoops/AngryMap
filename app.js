@@ -10,7 +10,7 @@ const express     = require("express"),
       mongoose    = require("mongoose"),
       //other funcitons
       bodyParser  = require("body-parser"),
-      seedDB = require("./seeds")
+      seedDB      = require("./seeds")
       
       //database test=================
       //seedDB() //seed db with data
@@ -23,7 +23,7 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 
 // DB config
-mongoose.connect(process.env.DATABASEURL,{ useNewUrlParser: true })
+mongoose.connect("mongodb://parktower702:parktower702@ds123783.mlab.com:23783/utility_map",{ useNewUrlParser: true })
 
 // seed the databse with fake data
   seedDB()
@@ -37,7 +37,7 @@ app.get("/:location",(req,res)=>{
   //how to return json in express? res.json(obj) you are welcome
   switch(loca){
     case 2: //country
-      Country.findOne({"key": code.substring(0,2)},{"key":true, "name":true,"states":true,"_id":false},(err,country)=>{
+      Country.find({"key": code.substring(0,2)},{"key":true, "name":true,"states":true,"_id":false},(err,country)=>{
         if(!err){
           State.find({"_id":country.states},{"key":true, "_id":false, "name":true},(err,foundStates)=>{
             if(!err){
@@ -55,14 +55,10 @@ app.get("/:location",(req,res)=>{
       //some quantum db operations here
       break
     case 16: //building
-          console.log(code.substring(0,2))
-          console.log(code.substring(2,6))
-          console.log(code.substring(6,11))
-          console.log(code.substring(11,17))
-                 Building.findOne({"key":code.substring(11,17)},{"key":true,"utilities":true,"_id":false,"name":true},(err,foundBuilding)=>{
-                  // let utilities = foundBuilding.utilities
-                  res.json({foundBuilding})
-                })
+       Building.findOne({"key":code.substring(11,17)},{"key":true,"utilities":true,"_id":false,"name":true},(err,foundBuilding)=>{
+        // let utilities = foundBuilding.utilities
+        res.jsonp(foundBuilding)
+      })
       break
     case 20: //floor
       //i need to finish my paper by tuesday
@@ -130,6 +126,6 @@ app.post("/location", (req,res)=>{
   })
 })
 
-app.listen(process.env.PORT,process.env.IP,()=>{
+app.listen("8080",process.env.IP,()=>{
   console.log("start running the server")
 })
