@@ -13,48 +13,93 @@ const dropC = (c) => {
 
 const insertBuildings = (bds) => {
   //drop all collections before inserting data----------------------------------
-    dropC(Country)
-    dropC(State)
-    dropC(Institution)
-    dropC(Building)
-    dropC(Floor)
-    dropC(Room)
+    // dropC(Country)
+    // dropC(State)
+    // dropC(Institution)
+    // dropC(Building)
+    // dropC(Floor)
+    // dropC(Room)
   //----------------------------------------------------------------------------
-    Country.create({name:"United States",key:"US"},(err,country)=>{
-    if(!err){
-     State.create({name:"Wisconsin",key:"WISC"},(err,state)=>{
-       if(!err){
-         //associate state with country
-          country.states.push(state)
-          country.save()
-          Institution.create({name:"University of Wisconsin-Madison",key:"UWMAD"},(err,institution)=>{
-            if(!err){
-              //associate institution with state
-              state.institutions.push(institution)
-              state.save()
-              let x = 0
-              bds.forEach((building)=>{
-                    //insert building into db
-                              Building.create({utilities:building.utilities,
-                                         //coordinates是反过来的
-                                         lat:building.coordinates[1],
-                                         lng:building.coordinates[0],
-                                         name:building.name,
-                                         key:building.key},
-                                         (err,building)=>{
-                if(!err){
-                  //associate building with institution
-                  institution.buildings.push(building)
-                  }
-                })
-              })
-              institution.save()
-            }
-          })  
-       }
-     }) 
-    }
-  })
+    var US = new Country({
+      _id: new mongoose.Types.ObjectId(),
+      name: "America",
+      key: "US"
+    })
+    var WISC = new State({
+        _id: new mongoose.Types.ObjectId(),
+        name: "Wisconsin",
+        key: "WISC",
+      })
+    US.states.push(WISC._id)
+    var UWMADISON = new Institution({
+      _id: new mongoose.Types.ObjectId(),
+      name:"University of Wisconsin-Madison",
+      key:"UWMAD"
+    })
+    WISC.institutions.push(UWMADISON._id)
+    bds.forEach(function(bd){
+      var bd = new Building({_id: new mongoose.Types.ObjectId(),
+                            utilities:bd.utilities,
+                            //coordinates是反过来的
+                            lat:bd.coordinates[1],
+                            lng:bd.coordinates[0],
+                            name:bd.name,
+                            key:bd.key})
+      UWMADISON.buildings.push(bd._id)
+      bd.save(function(err){if(err) console.log(err)})
+    })
+    US.save(function(err){
+      if(err) console.log(err)
+      console.log("save country")
+    })
+    WISC.save(function(err){
+      if(err) console.log(err)
+        console.log("save a state")
+      })
+    UWMADISON.save(function(err){
+      if(err) console.log(err)
+        console.log("save a institution")
+    })
+  //   Country.create({name:"United States",key:"US"},(err,country)=>{
+  //   if(!err){
+  //    State.create({name:"Wisconsin",key:"WISC"},(err,state)=>{
+  //      if(!err){
+  //        //associate state with country
+  //         country.states.push(state)
+  //         country.save()
+          
+
+
+  //         Institution.create({name:"University of Wisconsin-Madison",key:"UWMAD"},(err,institution)=>{
+  //           if(!err){
+  //             //associate institution with state
+  //             state.institutions.push(institution)
+  //             state.save()
+  //             let x = 0
+  //             bds.forEach((building)=>{
+  //                   //insert building into db
+  //                   Building.create({utilities:building.utilities,
+  //                                        //coordinates是反过来的
+  //                                        lat:building.coordinates[1],
+  //                                        lng:building.coordinates[0],
+  //                                        name:building.name,
+  //                                        key:building.key},
+  //                                        (err,building)=>{
+  //               if(!err){
+  //                 //associate building with institution
+  //                 institution.buildings.push(building)
+  //                 institution.save()
+  //                 }
+  //               })
+  //             })
+
+              
+  //           }
+  //         })  
+  //      }
+  //    }) 
+  //   }
+  // })
 }
 
 // Read Asynchrously
