@@ -32,6 +32,7 @@ const insertBuildings = (bds) => {
               //associate institution with state
               state.institutions.push(institution)
               state.save()
+              let x = 0
               bds.forEach((building)=>{
                     //insert building into db
                               Building.create({utilities:building.utilities,
@@ -44,11 +45,10 @@ const insertBuildings = (bds) => {
                 if(!err){
                   //associate building with institution
                   institution.buildings.push(building)
-                  institution.save()
-                  console.log("created: " + building.name)
                   }
                 })
               })
+              institution.save()
             }
           })  
        }
@@ -69,6 +69,7 @@ const seedDB =()=>{
   //read buildings and microwaves json files
   let buildings =  getJsonObj('./test_jsons/buildings.json').buildings
   let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
+  let printers = getJsonObj('./test_jsons/Printers.json').printers
   
   buildings.forEach((building)=>{
     let utility = []
@@ -76,6 +77,12 @@ const seedDB =()=>{
       if(building.key === microwave.key){
         //push utilites into building's utilities array using same key
         utility.push(microwave)
+      }
+    })
+    printers.forEach((printer)=>{
+      if(building.key === printer.key){
+        //push utilites into building's utilities array using same key
+        utility.push(printer)
       }
     })
     building.utilities = utility //assign utility to buildings

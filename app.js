@@ -13,7 +13,7 @@ const express     = require("express"),
       seedDB      = require("./seeds")
       
       //database test=================
-      //seedDB() //seed db with data
+      // seedDB() //seed db with data
       //================================
       
 //app configs~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,7 +67,7 @@ app.get("/:location",(req,res)=>{
       })
       break
     case 11: //institution
-      //some quantum shitty db operations here
+      //some db operations here
       Institution.findOne({"key": code.substring(6,11)},{"key":true, "name":true,"buildings":true,"_id":false},(err,foundInstitution)=>{
         if(!err){
           Building.find({"_id":foundInstitution.buildings},(err,foundBuildings)=>{
