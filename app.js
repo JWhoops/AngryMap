@@ -23,10 +23,7 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 
 // DB config
-mongoose.connect("mongodb://parktower702:parktower702@ds123783.mlab.com:23783/utility_map",{ useNewUrlParser: true })
-
-// seed the databse with fake data
-//seedDB()
+mongoose.connect("mongodb://aa5330593:aa5330593@ds249583.mlab.com:49583/utility_map",{ useNewUrlParser: true })
 
 //fking dumb icon
 app.get('/favicon.ico', (req, res) => res.status(204));

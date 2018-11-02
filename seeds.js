@@ -6,25 +6,12 @@ var mongoose    = require("mongoose"),
     Floor       = require("./models/floor"),
     Room        = require("./models/room")
 
-//drop a collection
-const dropC = (c) => {
-  c.remove({}, function(err) {if(!err)console.log('removed one collection')});
-}
-
 const createBuildings = (bds) => {
-  //drop all collections before inserting data----------------------------------
-    // dropC(Country)
-    // dropC(State)
-    // dropC(Institution)
-    // dropC(Building)
-    // dropC(Floor)
-    // dropC(Room)
-  //----------------------------------------------------------------------------
     var US = new Country({
-      _id: new mongoose.Types.ObjectId(),
-      name: "America",
-      key: "US"
-    })
+        _id: new mongoose.Types.ObjectId(),
+        name: "United States",
+        key: "US",
+    })  
     var WISC = new State({
         _id: new mongoose.Types.ObjectId(),
         name: "Wisconsin",
@@ -92,17 +79,7 @@ const seedDB =()=>{
     })
     building.utilities = utility //assign utility to buildings
     })
-    //createBuildings(buildings) //insert building list into database
-    
-    buildings.forEach(function(bd){
-        insert({
-          country:{name:"United States",key:"US"},
-          state:{name:"Wisconsin",key:"WISC"},
-          institution:{name:"University of Wisconsin-Madison",key:"UWMAD"},
-          building:{name:bd.name,key:bd.key,utilities:bd.utilities}
-        },3)
-        console.log("created a building")
-    })
+    createBuildings(buildings) //insert building list into database
   }
 
 //obj format:
@@ -118,77 +95,55 @@ const seedDB =()=>{
 //   buildingUtilities:buildingUtilities
 //....and other fields so on
 // }
-const insert = (obj, level)=>{
-  Country.findOne({name: obj.country.name},function(err, fCountry){
-    console.log(fCountry)
-    if(fCountry == null){
-      fCountry = create({
-      _id: new mongoose.Types.ObjectId(),
-      name: obj.country.name,
-      key: obj.country.key
-    },Country)
-    if(level === 0) fCountry.save()
-    }
-    if(level > 0){
-      State.findOne({name: obj.stateName},function(err,fState){
-      if(fState == null){
-        fState = create({
-        _id: new mongoose.Types.ObjectId(),
-        name: obj.state.name,
-        key: obj.state.key
-        },State)
-        fCountry.states.push(fState._id)
-        fCountry.save()
-      }
-      if(level === 1) fState.save()
-      if(level > 1){
-        Institution.findOne({name:obj.institutionName},function(err,fInstitution){
-          if(fInstitution==null){
-            fInstitution = create({
-            _id: new mongoose.Types.ObjectId(),
-            name: obj.institution.name,
-            key: obj.institution.key
-            },Institution)
-            fState.institutions.push(fInstitution._id)
-            fState.save()
-          }
-          if(level === 2) fInstitution.save()
-          if(level > 2){
-            Building.findOne({name:obj.buildingName},function(err,fBuilding){
-              if(fBuilding==null){
-                fBuilding = create({
-                _id: new mongoose.Types.ObjectId(),
-                name: obj.building.name,
-                key: obj.building.key,
-                utilities: obj.building.utilities
-                },Building)
-                fInstitution.buildings.push(fBuilding._id)
-                fInstitution.save()
-              }
-              fBuilding.save()
-            })
+function insertOne(obj, level){
+  for (var i = 0; i <= level; i++) {
+    switch(level){
+      case 0: 
+        Country.findOne({name: obj.country.name},(err,fCountry)=>{
+          if(!err){
+            if(!fCountry){
+              var country = new Country(obj.country)
+              country.save()
+            }
           }
         })
-       }
-      })
+        break
+      case 1:
+        State.findOne({name:obj.state.name},(err,fState)=>{
+          if(!err){
+            if(!fState){
+              var state = new State(obj.state)
+              state.save()
+            }
+          }
+        })
+        break
+      case 2:
+        Institution.findOne({name:obj.institution.name},(err,fInstitution)=>{
+          if(!err){
+            if(!fInstitution){
+              var institution = new Institution(obj.institution)
+              institution.save()
+            }
+          }
+        })
+        break
+      case 3:
+        Building.findOne({name:obj.building.name},(err,fBuilding)=>{
+          if(!err){
+            if(!fBuilding){
+              var building = new Building(obj.building)
+              building.save()
+            }
+          }
+        })
     }
-  })
+  }
 }
 
 const create = (obj,schema)=>{
     var createdObj = new schema(obj)
     return createdObj
-}
-
-function test(){
-    // dropC(Country)
-    // dropC(State)
-    // dropC(Institution)
-    // dropC(Building)
-    // dropC(Floor)
-    // dropC(Room)
-  
-
 }
 
 module.exports = seedDB
