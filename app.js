@@ -13,7 +13,7 @@ const express     = require("express"),
       seedDB      = require("./seeds")
       
       //database test=================
-      //seedDB() //seed db with data
+      seedDB() //seed db with data
       //================================
       
 //app configs~~~~~~~~~~~~~~~~~~~~~~~

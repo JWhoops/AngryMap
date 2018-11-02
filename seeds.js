@@ -11,7 +11,7 @@ const dropC = (c) => {
   c.remove({}, function(err) {if(!err)console.log('removed one collection')});
 }
 
-const insertBuildings = (bds) => {
+const createBuildings = (bds) => {
   //drop all collections before inserting data----------------------------------
     // dropC(Country)
     // dropC(State)
@@ -60,46 +60,6 @@ const insertBuildings = (bds) => {
       if(err) console.log(err)
         console.log("save a institution")
     })
-  //   Country.create({name:"United States",key:"US"},(err,country)=>{
-  //   if(!err){
-  //    State.create({name:"Wisconsin",key:"WISC"},(err,state)=>{
-  //      if(!err){
-  //        //associate state with country
-  //         country.states.push(state)
-  //         country.save()
-          
-
-
-  //         Institution.create({name:"University of Wisconsin-Madison",key:"UWMAD"},(err,institution)=>{
-  //           if(!err){
-  //             //associate institution with state
-  //             state.institutions.push(institution)
-  //             state.save()
-  //             let x = 0
-  //             bds.forEach((building)=>{
-  //                   //insert building into db
-  //                   Building.create({utilities:building.utilities,
-  //                                        //coordinates是反过来的
-  //                                        lat:building.coordinates[1],
-  //                                        lng:building.coordinates[0],
-  //                                        name:building.name,
-  //                                        key:building.key},
-  //                                        (err,building)=>{
-  //               if(!err){
-  //                 //associate building with institution
-  //                 institution.buildings.push(building)
-  //                 institution.save()
-  //                 }
-  //               })
-  //             })
-
-              
-  //           }
-  //         })  
-  //      }
-  //    }) 
-  //   }
-  // })
 }
 
 // Read Asynchrously
@@ -132,9 +92,103 @@ const seedDB =()=>{
     })
     building.utilities = utility //assign utility to buildings
     })
-    insertBuildings(buildings) //insert building list into database
+    //createBuildings(buildings) //insert building list into database
+    
+    buildings.forEach(function(bd){
+        insert({
+          country:{name:"United States",key:"US"},
+          state:{name:"Wisconsin",key:"WISC"},
+          institution:{name:"University of Wisconsin-Madison",key:"UWMAD"},
+          building:{name:bd.name,key:bd.key,utilities:bd.utilities}
+        },3)
+        console.log("created a building")
+    })
   }
+
+//obj format:
+// {
+//   countryName:countryName:,
+//   countryKey:countryKey,
+//   stateName:stateName:,
+//   stateKey:stateKey,
+//   institutionName:institutionName:,
+//   institutionKey:institutionKey,
+//   buildingName:buildingName:,
+//   buildingKey:buildingKey,
+//   buildingUtilities:buildingUtilities
+//....and other fields so on
+// }
+const insert = (obj, level)=>{
+  Country.findOne({name: obj.country.name},function(err, fCountry){
+    console.log(fCountry)
+    if(fCountry == null){
+      fCountry = create({
+      _id: new mongoose.Types.ObjectId(),
+      name: obj.country.name,
+      key: obj.country.key
+    },Country)
+    if(level === 0) fCountry.save()
+    }
+    if(level > 0){
+      State.findOne({name: obj.stateName},function(err,fState){
+      if(fState == null){
+        fState = create({
+        _id: new mongoose.Types.ObjectId(),
+        name: obj.state.name,
+        key: obj.state.key
+        },State)
+        fCountry.states.push(fState._id)
+        fCountry.save()
+      }
+      if(level === 1) fState.save()
+      if(level > 1){
+        Institution.findOne({name:obj.institutionName},function(err,fInstitution){
+          if(fInstitution==null){
+            fInstitution = create({
+            _id: new mongoose.Types.ObjectId(),
+            name: obj.institution.name,
+            key: obj.institution.key
+            },Institution)
+            fState.institutions.push(fInstitution._id)
+            fState.save()
+          }
+          if(level === 2) fInstitution.save()
+          if(level > 2){
+            Building.findOne({name:obj.buildingName},function(err,fBuilding){
+              if(fBuilding==null){
+                fBuilding = create({
+                _id: new mongoose.Types.ObjectId(),
+                name: obj.building.name,
+                key: obj.building.key,
+                utilities: obj.building.utilities
+                },Building)
+                fInstitution.buildings.push(fBuilding._id)
+                fInstitution.save()
+              }
+              fBuilding.save()
+            })
+          }
+        })
+       }
+      })
+    }
+  })
+}
+
+const create = (obj,schema)=>{
+    var createdObj = new schema(obj)
+    return createdObj
+}
+
+function test(){
+    // dropC(Country)
+    // dropC(State)
+    // dropC(Institution)
+    // dropC(Building)
+    // dropC(Floor)
+    // dropC(Room)
   
 
+}
 
 module.exports = seedDB
