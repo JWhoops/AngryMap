@@ -1,6 +1,9 @@
 TODO:
 <ol>
-<li>update routers that will return different json file</li>
+<li>fix the insert function in seed.js(save only till the last level)</li>
+<li>add update/remove functions</li>
+<li>add validation on new post</li>
+<li>add new/post functions</li>
 </ol>
 
 <hr>
