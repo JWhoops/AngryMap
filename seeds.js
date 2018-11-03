@@ -6,46 +6,84 @@ var mongoose    = require("mongoose"),
     Floor       = require("./models/floor"),
     Room        = require("./models/room")
 
-const createBuildings = (bds) => {
-    var US = new Country({
-        _id: new mongoose.Types.ObjectId(),
-        name: "United States",
-        key: "US",
-    })  
-    var WISC = new State({
-        _id: new mongoose.Types.ObjectId(),
-        name: "Wisconsin",
-        key: "WISC",
-      })
-    US.states.push(WISC._id)
-    var UWMADISON = new Institution({
-      _id: new mongoose.Types.ObjectId(),
-      name:"University of Wisconsin-Madison",
-      key:"UWMAD"
+//insert many record using aray
+const insertMany = (objArray,schema)=>{
+  objArray.forEach((obj)=>{
+      createIfNotExists(obj,schema)
     })
-    WISC.institutions.push(UWMADISON._id)
-    bds.forEach(function(bd){
-      var bd = new Building({_id: new mongoose.Types.ObjectId(),
-                            utilities:bd.utilities,
+}
+//insert a new record
+const insertOne = (obj,schema)=>{
+  createIfNotExists(obj,schema)
+}
+//delete one record
+const deleteOne = (obj,schema)=>{
+  schema.deleteOne({name:obj.name},(err)=>{
+    console.log(err)
+  });
+}
+//update a record
+const updateOne = (obj,updatedObj,schema)=>{
+  schema.findOneAndUpdate(obj,updatedObj,(err)=>{console.log(err)}) // executes
+}
+//read based on key and schema
+const readDatas = (queryKey,schema,callback)=>{
+  schema.find({key:queryKey},(err,foundCountry)=>{
+        callback(foundCountry)
+      });
+}
+//create one record if not exists
+var createIfNotExists = (obj,schema)=>{
+  schema.findOne({key:obj.key},(err,fObj)=>{
+  if(err){
+    console.log(err)
+  }
+  if(!fObj){
+      fObj = new schema(obj)
+      fObj.save()
+    }
+})
+}
+//working on it
+const readJSONByKey = (queryKey,callback)=>{
+  switch(queryKey.length){
+    case 2: //country
+      readDatas(queryKey.substring(0,2),Country,callback)
+      break
+    case 6: //state
+      readDatas(queryKey.substring(2,6),State,callback)
+      break
+    case 11: //institution
+      readDatas(queryKey.substring(6,11),Institution,callback)
+    case 16: //building
+      readDatas(queryKey.substring(1,17),Building,callback)
+      break
+    case 20: //floor
+      //i need to finish my paper by tuesday
+      break
+    case 25: //room
+      //so maybe i should work on that tomorrow
+      break
+    default:
+      //500 json
+  }
+
+}
+//used to populate buildings
+const populateBuildings = (countryObj,stateObj,institutionObj,bdObjs) => {
+    insertOne(countryObj,Country)
+    insertOne(stateObj,State)
+    insertOne(institutionObj,Institution)
+ //spceial because of coordinates
+    bdObjs.forEach(function(bdObj){
+      var bd = new Building({
+                            utilities:bdObj.utilities,
                             //coordinates是反过来的
-                            lat:bd.coordinates[1],
-                            lng:bd.coordinates[0],
-                            name:bd.name,
-                            key:bd.key})
-      UWMADISON.buildings.push(bd._id)
-      bd.save(function(err){if(err) console.log(err)})
-    })
-    US.save(function(err){
-      if(err) console.log(err)
-      console.log("save country")
-    })
-    WISC.save(function(err){
-      if(err) console.log(err)
-        console.log("save a state")
-      })
-    UWMADISON.save(function(err){
-      if(err) console.log(err)
-        console.log("save a institution")
+                            lat:bdObj.coordinates[1],
+                            lng:bdObj.coordinates[0],
+                            name:bdObj.name,
+                            key:bdObj.key})
+      bd.save()
     })
 }
 
@@ -57,7 +95,7 @@ const createBuildings = (bds) => {
   return content;
  }
 
-const seedDB =()=>{
+const populateMadison = () => {
   //read buildings and microwaves json files
   let buildings =  getJsonObj('./test_jsons/buildings.json').buildings
   let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
@@ -79,71 +117,12 @@ const seedDB =()=>{
     })
     building.utilities = utility //assign utility to buildings
     })
-    createBuildings(buildings) //insert building list into database
+    // populateBuildings({name:"United States",key:"US"},
+    //                   {name:"Wisconsin",key:"WISC"},
+    //                   {name:"University of Wisconsin-Madison",key:"UWMAD"},
+    //                   buildings) //insert building list into database
+
   }
 
-//obj format:
-// {
-//   countryName:countryName:,
-//   countryKey:countryKey,
-//   stateName:stateName:,
-//   stateKey:stateKey,
-//   institutionName:institutionName:,
-//   institutionKey:institutionKey,
-//   buildingName:buildingName:,
-//   buildingKey:buildingKey,
-//   buildingUtilities:buildingUtilities
-//....and other fields so on
-// }
-function insertOne(obj, level){
-  for (var i = 0; i <= level; i++) {
-    switch(level){
-      case 0: 
-        Country.findOne({name: obj.country.name},(err,fCountry)=>{
-          if(!err){
-            if(!fCountry){
-              var country = new Country(obj.country)
-              country.save()
-            }
-          }
-        })
-        break
-      case 1:
-        State.findOne({name:obj.state.name},(err,fState)=>{
-          if(!err){
-            if(!fState){
-              var state = new State(obj.state)
-              state.save()
-            }
-          }
-        })
-        break
-      case 2:
-        Institution.findOne({name:obj.institution.name},(err,fInstitution)=>{
-          if(!err){
-            if(!fInstitution){
-              var institution = new Institution(obj.institution)
-              institution.save()
-            }
-          }
-        })
-        break
-      case 3:
-        Building.findOne({name:obj.building.name},(err,fBuilding)=>{
-          if(!err){
-            if(!fBuilding){
-              var building = new Building(obj.building)
-              building.save()
-            }
-          }
-        })
-    }
-  }
-}
 
-const create = (obj,schema)=>{
-    var createdObj = new schema(obj)
-    return createdObj
-}
-
-module.exports = seedDB
+module.exports = populateMadison
