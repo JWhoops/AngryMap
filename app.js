@@ -1,20 +1,16 @@
 //import packages
-const express     = require("express"),
+const express    = require("express"),
       //require models
-      Country     = require("./models/country"),
-      State       = require("./models/state"),
-      Institution = require("./models/institution"),
-      Building    = require("./models/building"),
-      Floor       = require("./models/floor"),
-      Room        = require("./models/room"),
-      mongoose    = require("mongoose"),
+      Country    = require("./models/country"),
+      State      = require("./models/state"),
+      Institution= require("./models/institution"),
+      Building   = require("./models/building"),
+      Floor      = require("./models/floor"),
+      Room       = require("./models/room"),
+      mongoose   = require("mongoose"),
       //other funcitons
-      bodyParser  = require("body-parser"),
-      seedDB      = require("./seeds")
-      
-      //database test=================
-      seedDB() //seed db with data
-      //================================
+      bodyParser = require("body-parser"),
+      utilityDB  = require("./db/utilityDB")
       
 //app configs~~~~~~~~~~~~~~~~~~~~~~~
 const app = express()
@@ -30,67 +26,12 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 
 //location route
 app.get("/:location",(req,res)=>{
-
-  //get the geoHash code
-  var code = req.params.location.toString()
-
-  //get the length of location
-  var loca = code.length
-
-  //how to return json in express? res.json(obj) you are welcome
-  switch(loca){
-    case 2: //country
-      Country.findOne({"key": code.substring(0,2)},{"key":true, "name":true,"states":true,"_id":false},(err,foundCountry)=>{
-        if(!err){
-          State.find({"_id":foundCountry.states},{"key":true, "_id":false, "name":true},(err,foundStates)=>{
-            if(!err){
-              foundCountry.states = undefined
-              res.jsonp({foundCountry,foundStates})
-            } 
-          })
-        }
-      })
-      break
-    case 6: //state
-      State.findOne({"key": code.substring(2,6)},{"key":true, "name":true,"institutions":true,"_id":false},(err,foundState)=>{
-        if(!err){
-          Institution.find({"_id":foundState.institutions},{'_id':false,"buildings": false},(err,foundInstitutions)=>{
-            if(!err){
-              foundState.institutions = undefined
-              res.jsonp({foundState,foundInstitutions})
-            } 
-          })
-        }
-      })
-      break
-    case 11: //institution
-      //some db operations here
-      Institution.findOne({"key": code.substring(6,11)},{"key":true, "name":true,"buildings":true,"_id":false},(err,foundInstitution)=>{
-        if(!err){
-          Building.find({"_id":foundInstitution.buildings},(err,foundBuildings)=>{
-            if(!err){              
-              foundInstitution.buildings = undefined
-              res.jsonp({foundInstitution,foundBuildings})
-            } 
-          })
-        }
-      })
-      break
-    case 16: //building
-       Building.find({"key":code.substring(11,17)},(err,foundBuilding)=>{
-        // let utilities = foundBuilding.utilities
-        res.jsonp(foundBuilding)
-      })
-      break
-    case 20: //floor
-      //i need to finish my paper by tuesday
-      break
-    case 25: //room
-      //so maybe i should work on that tomorrow
-      break
-    default:
-      //500 json
-  }
+  //get key from url and render json
+  let key = req.params.location.toString()
+  utilityDB.getJSONByKey(key,(current,next)=>{
+    let current = current[0]
+    res.jsonp({country,next})
+  })
 })
 
 //root route
