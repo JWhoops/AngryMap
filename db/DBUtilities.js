@@ -8,6 +8,9 @@ const utilityDB = (() =>{
       Floor       = require("../models/floor"),
       Room        = require("../models/room")
   
+  // connect DB
+  mongoose.connect("mongodb://aa5330593:aa5330593@ds249583.mlab.com:49583/utility_map",{ useNewUrlParser: true })
+  
   //create one record if not exists
   const createIfNotExists = (obj,schema)=>{
     schema.findOne({key:obj.key},(err,fObj)=>{
@@ -40,13 +43,14 @@ const utilityDB = (() =>{
   }
   //read based on key and schema
   const readDBbyKey = (queryKey,schema,callback)=>{
-    schema.find({key:queryKey},(err,result)=>{
+    schema.find({key:queryKey},{_id:false,__v:false},(err,result)=>{
           callback(result)
         });
   }
   //read database using regex
   const readDBbyRegexKey = (regexKey,schema,callback)=>{
-    schema.find({key: new RegExp(regexKey,"i")},(err,result)=>{
+    schema.find({key: new RegExp(regexKey,"i")},{_id:false,__v:false},
+      (err,result)=>{
           callback(result)
         });
   }
@@ -54,11 +58,12 @@ const utilityDB = (() =>{
   const getCurrentAndNextLevel = (queryKey,currentSchema,nextSchema,callback)=>{
     readDBbyKey(queryKey,currentSchema,(fCurrent)=>{
           readDBbyRegexKey('^'+ queryKey,nextSchema,(fNext)=>{
-            callback(fCurrent,fNext)
+            /*too lazy to create find by key using findOne
+            use [0] to substitute*/
+            callback(fCurrent[0],fNext)
           })
         })
   }
-
   /*get data of current and next level by length
   of key and then return both levels using callback*/
   const getJSONByKey = (queryKey,callback)=>{
@@ -86,7 +91,7 @@ const utilityDB = (() =>{
   }
 
   //insert a record using level
-  const insertByLevel = (obj,level) => {
+  const insertByLevel = (obj,level,callback) => {
     for (let i = 0; i <= level; i++) {
      switch(i){
       case 0:
@@ -111,6 +116,7 @@ const utilityDB = (() =>{
         break
      }
     }
+    callback(obj)
   }
 
 // Read Asynchrously
