@@ -84,6 +84,31 @@ const utilityDB = (() =>{
         //500 json
     }
   }
+
+  //insert a record using level
+  const insertByLevel = (obj,level,callback) => {
+    for (let i = 0; i <= level; i++) {
+     switch(i){
+      case 0:
+        insertOne(obj.country,Country)
+        break
+      case 1:
+        insertOne(obj.state,State)
+        break
+      case 2:
+        insertOne(obj.institution,Institution)
+        break
+      case 3:
+        //hash building key
+        obj.building.key = hashBdKey(obj.building.name.trim(),5)
+        insertOne(obj.building,Building)
+        break
+      default:
+        console.log("err insertByLevel")
+        break
+     }
+    }
+  }
   //used to populate buildings
   const populateBuildings = (countryObj,stateObj,institutionObj,bdObjs) => {
     insertOne(countryObj,Country)
@@ -109,6 +134,42 @@ const utilityDB = (() =>{
   var content = JSON.parse(fs.readFileSync(path));
   return content;
  }
+
+ function hashBdKey(str, len) {
+        if(len<1)
+                return null;
+        if(len>=str.length)
+            return str.toUpperCase();
+        var ucIndex = [];
+        for(var i=0;i<str.length;i++){
+                var c = str.charAt(i);
+                if(c == c.toUpperCase()&&c!=" ")
+                        ucIndex.push(i);
+        }
+        if(ucIndex.length==0)
+                return str.substring(0,len).toUpperCase();
+        return getChars(str, ucIndex, len);
+}
+
+function getChars(str, ucIndex, len){
+        var unitCount = len/(ucIndex.length);
+        var result = "";
+        var endIndex = 0;
+        for(var i=0;i<ucIndex.length;i++){
+                for(var j=0;j<unitCount;j++){
+                        result+=str.charAt(ucIndex[i]+j);
+                }
+                endIndex = i;
+        }
+        var diff = len-result.length;
+        result = result.toUpperCase();
+        if(diff<0)
+            return result.substring(0,len);
+        for(var i=0;i<diff;i++){
+                result+=str.charAt(ucIndex[endIndex]+i);
+        }
+        return result;
+}
 
 const populateMadison = () => {
   //read buildings and microwaves json files
@@ -136,7 +197,7 @@ const populateMadison = () => {
     //                   {name:"University of Wisconsin-Madison",key:"UWMAD"},
     //                   buildings) //insert building list into database
   }
-  return{getJSONByKey}
+  return{getJSONByKey,insertByLevel}
 })()
 
 module.exports = utilityDB
