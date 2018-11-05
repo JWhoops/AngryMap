@@ -51,9 +51,9 @@ app.post("/location", (req,res)=>{
 })
 
 utilityDB.insertByLevel({country:{name:"China",key:"CN"},
-                      state:{name:"Wei Hai",key:"weihai"},
-                      institution:{name:"jibababsdf",key:"ahahah"},
-                      building:{name:"hai shui yu chang"}
+                      state:{name:"FuckingDumbIcon",key:"FDIC"},
+                      institution:{name:"Fucking of Dumb",key:"FODDD"},
+                      building:{name:"fg of dumb icone asdjoge"}
                    },3)
 
 

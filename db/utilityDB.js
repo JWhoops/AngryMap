@@ -135,9 +135,10 @@ const utilityDB = (() =>{
   return content;
  }
 
- function hashBdKey(str, len) {
-        if(len<1)
+function hashBdKey(str, len) {
+        if(len<1||str==null)
                 return null;
+	str = str.trim();
         if(len>=str.length)
             return str.toUpperCase();
         var ucIndex = [];
@@ -147,11 +148,11 @@ const utilityDB = (() =>{
                         ucIndex.push(i);
         }
         if(ucIndex.length==0)
-                return str.substring(0,len).toUpperCase();
+                return replaceSpaceWithUnderscore(str.substring(0,len).toUpperCase());
         return getChars(str, ucIndex, len);
 }
 
-function getChars(str, ucIndex, len){
+function getChars(str, ucIndex, len) {
         var unitCount = len/(ucIndex.length);
         var result = "";
         var endIndex = 0;
@@ -169,6 +170,15 @@ function getChars(str, ucIndex, len){
                 result+=str.charAt(ucIndex[endIndex]+i);
         }
         return result;
+}
+
+function replaceSpaceWithUnderscore(str){
+	var result = "";
+	for(var i=0;i<str.length;i++){
+		var c = str.charAt(i);
+		result+=(c==' '?"_":c);
+	}
+	return result;
 }
 
 const populateMadison = () => {
