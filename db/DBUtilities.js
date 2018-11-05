@@ -7,7 +7,7 @@ const utilityDB = (() =>{
       Building    = require("../models/building"),
       Floor       = require("../models/floor"),
       Room        = require("../models/room")
-
+  
   //create one record if not exists
   const createIfNotExists = (obj,schema)=>{
     schema.findOne({key:obj.key},(err,fObj)=>{
@@ -86,7 +86,7 @@ const utilityDB = (() =>{
   }
 
   //insert a record using level
-  const insertByLevel = (obj,level,callback) => {
+  const insertByLevel = (obj,level) => {
     for (let i = 0; i <= level; i++) {
      switch(i){
       case 0:
@@ -102,7 +102,8 @@ const utilityDB = (() =>{
         break
       case 3:
         //hash building key
-        obj.building.key = obj.institution.key.concat(hashBdKey(obj.building.name,5))
+        obj.building.key = (obj.institution.key.
+                            concat(hashBdKey(obj.building.name,5))).toUpperCase()
         insertOne(obj.building,Building)
         break
       default:
@@ -123,7 +124,7 @@ const utilityDB = (() =>{
   const hashBdKey = (str, len) => {
         if(len<1||str==null)
                 return null;
-	str = trim(str);
+	str = str.trim();
         if(len>=str.length)
             return str.toUpperCase();
         var ucIndex = [];
@@ -157,24 +158,13 @@ const utilityDB = (() =>{
         return result;
 }
 
-function replaceSpaceWithUnderscore(str){
+const replaceSpaceWithUnderscore = (str) => {
 	var result = "";
 	for(var i=0;i<str.length;i++){
 		var c = str.charAt(i);
 		result+=(c==' '?"_":c);
 	}
 	return result;
-}
-
-function trim(str){
-        let i =0;
-        while(str.charAt(i++)==' ');    
-        str = str.substring(i-1,str.length);
-        print(str);
-        i = str.length-1;
-        while(str.charAt(i--)== ' ');           
-        str = str.substring(0, i+2);
-        return str;
 }
 
   //used to populate buildings
