@@ -1,9 +1,13 @@
 TODO:
 <ol>
-<li>fix the insert function in seed.js(save only till the last level)</li>
+<li>finish path-finding(use GoogleMap API)</li>
+<li>finish detail page</li>
+<li>connect with cloudinary</li>
+<li>another db for unverified data</li>
 <li>add update/remove functions</li>
-<li>add validation on new post</li>
+<li>add validation on new post(will do for front end)</li>
 <li>add new/post functions</li>
+<li>finish front-end posting page</li>
 </ol>
 
 <hr>

@@ -123,7 +123,7 @@ const utilityDB = (() =>{
   const hashBdKey = (str, len) => {
         if(len<1||str==null)
                 return null;
-	str = str.trim();
+	str = trim(str);
         if(len>=str.length)
             return str.toUpperCase();
         var ucIndex = [];
@@ -164,6 +164,17 @@ function replaceSpaceWithUnderscore(str){
 		result+=(c==' '?"_":c);
 	}
 	return result;
+}
+
+function trim(str){
+        let i =0;
+        while(str.charAt(i++)==' ');    
+        str = str.substring(i-1,str.length);
+        print(str);
+        i = str.length-1;
+        while(str.charAt(i--)== ' ');           
+        str = str.substring(0, i+2);
+        return str;
 }
 
   //used to populate buildings
