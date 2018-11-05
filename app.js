@@ -89,6 +89,41 @@ app.post("/location", (req,res)=>{
   })
 })
 
+function hash(str, len) {
+        if(len<1)
+                return null;
+        if(len>=str.length)
+            return str;
+        var ucIndex = [];
+        for(var i=0;i<str.length;i++){
+                var c = str.charAt(i);
+                if(c == c.toUpperCase()&&c!=" ")
+                        ucIndex.push(i);
+        }
+        if(ucIndex.length==0)
+                return str.substring(0,len);
+        return getChars(str, ucIndex, len);
+}
+
+function getChars(str, ucIndex, len){
+        var unitCount = len/(ucIndex.length);
+        var result = "";
+        var endIndex = 0;
+        for(var i=0;i<ucIndex.length;i++){
+                for(var j=0;j<unitCount;j++){
+                        result+=str.charAt(ucIndex[i]+j);
+                }
+                endIndex = i;
+        }
+        var diff = len-result.length;
+        if(diff<0)
+            return result.substring(0,len);
+        for(var i=0;i<diff;i++){
+                result+=str.charAt(ucIndex[endIndex]+i);
+        }
+        return result;
+}
+
 app.listen("8080",process.env.IP,()=>{
   console.log("start running the server")
 })
