@@ -93,14 +93,16 @@ const utilityDB = (() =>{
         insertOne(obj.country,Country)
         break
       case 1:
+        obj.state.key = obj.country.key.concat(obj.state.key)
         insertOne(obj.state,State)
         break
       case 2:
+        obj.institution.key = obj.state.key.concat(obj.institution.key)
         insertOne(obj.institution,Institution)
         break
       case 3:
         //hash building key
-        obj.building.key = hashBdKey(obj.building.name.trim(),5)
+        obj.building.key = obj.institution.key.concat(hashBdKey(obj.building.name,5))
         insertOne(obj.building,Building)
         break
       default:
@@ -108,23 +110,6 @@ const utilityDB = (() =>{
         break
      }
     }
-  }
-  //used to populate buildings
-  const populateBuildings = (countryObj,stateObj,institutionObj,bdObjs) => {
-    insertOne(countryObj,Country)
-    insertOne(stateObj,State)
-    insertOne(institutionObj,Institution)
-    //spceial because of coordinates
-    bdObjs.forEach((bdObj)=>{
-      var bd = new Building({
-                            utilities:bdObj.utilities,
-                            //coordinates是反过来的
-                            lat:bdObj.coordinates[1],
-                            lng:bdObj.coordinates[0],
-                            name:bdObj.name,
-                            key:bdObj.key})
-      bd.save()
-    })
   }
 
 // Read Asynchrously
@@ -135,7 +120,7 @@ const utilityDB = (() =>{
   return content;
  }
 
-function hashBdKey(str, len) {
+  const hashBdKey = (str, len) => {
         if(len<1||str==null)
                 return null;
 	str = str.trim();
@@ -152,7 +137,7 @@ function hashBdKey(str, len) {
         return getChars(str, ucIndex, len);
 }
 
-function getChars(str, ucIndex, len) {
+  const getChars = (str, ucIndex, len) => {
         var unitCount = len/(ucIndex.length);
         var result = "";
         var endIndex = 0;
@@ -181,32 +166,51 @@ function replaceSpaceWithUnderscore(str){
 	return result;
 }
 
-const populateMadison = () => {
-  //read buildings and microwaves json files
-  let buildings =  getJsonObj('./test_jsons/buildings.json').buildings
-  let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
-  let printers = getJsonObj('./test_jsons/Printers.json').printers
-  buildings.forEach((building)=>{
-    let utility = []
-    microwaves.forEach((microwave)=>{
-      if(building.key === microwave.key){
-        //push utilites into building's utilities array using same key
-        utility.push(microwave)
-      }
+  //used to populate buildings
+  const populateBuildings = (countryObj,stateObj,institutionObj,bdObjs) => {
+    insertOne(countryObj,Country)
+    insertOne(stateObj,State)
+    insertOne(institutionObj,Institution)
+    //spceial because of coordinates
+    bdObjs.forEach((bdObj)=>{
+      var bd = new Building({
+                            utilities:bdObj.utilities,
+                            //coordinates是反过来的
+                            lat:bdObj.coordinates[1],
+                            lng:bdObj.coordinates[0],
+                            name:bdObj.name,
+                            key:bdObj.key})
+      bd.save()
     })
-    printers.forEach((printer)=>{
-      if(building.key === printer.key){
-        //push utilites into building's utilities array using same key
-        utility.push(printer)
-      }
-    })
-    building.utilities = utility //assign utility to buildings
-    })
-    // populateBuildings({name:"United States",key:"US"},
-    //                   {name:"Wisconsin",key:"WISC"},
-    //                   {name:"University of Wisconsin-Madison",key:"UWMAD"},
-    //                   buildings) //insert building list into database
   }
+
+  const populateMadison = () => {
+    //read buildings and microwaves json files
+    let buildings =  getJsonObj('./test_jsons/buildings.json').buildings
+    let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
+    let printers = getJsonObj('./test_jsons/Printers.json').printers
+    buildings.forEach((building)=>{
+      let utility = []
+      microwaves.forEach((microwave)=>{
+        if(building.key === microwave.key){
+          //push utilites into building's utilities array using same key
+          utility.push(microwave)
+        }
+      })
+      printers.forEach((printer)=>{
+        if(building.key === printer.key){
+          //push utilites into building's utilities array using same key
+          utility.push(printer)
+        }
+      })
+      building.utilities = utility //assign utility to buildings
+      })
+      // populateBuildings({name:"United States",key:"US"},
+      //                   {name:"Wisconsin",key:"WISC"},
+      //                   {name:"University of Wisconsin-Madison",key:"UWMAD"},
+      //                   buildings) //insert building list into database
+    }
+
   return{getJSONByKey,insertByLevel}
 })()
 

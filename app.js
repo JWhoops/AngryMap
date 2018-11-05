@@ -1,16 +1,9 @@
 //import packages
 const express    = require("express"),
-      //require models
-      Country    = require("./models/country"),
-      State      = require("./models/state"),
-      Institution= require("./models/institution"),
-      Building   = require("./models/building"),
-      Floor      = require("./models/floor"),
-      Room       = require("./models/room"),
-      mongoose   = require("mongoose"),
+      mongoose   = require("mongoose"), //db
       //other funcitons
       bodyParser = require("body-parser"),
-      utilityDB  = require("./db/utilityDB")
+      DBUtilities  = require("./db/DBUtilities")
       
 //app configs~~~~~~~~~~~~~~~~~~~~~~~
 const app = express()
@@ -27,8 +20,7 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 //location route
 app.get("/:location",(req,res)=>{
   //get key from url and render json
-  let key = req.params.location.toString()
-  utilityDB.getJSONByKey(key,(current,next)=>{
+  DBUtilities.getJSONByKey(req.params.location.toString(),(current,next)=>{
     current = current[0]
     res.jsonp({country,next})
   })
@@ -44,18 +36,10 @@ app.get("/location/new", (req,res)=>{
   res.render("new")
 })
 
-
 //location create route
 app.post("/location", (req,res)=>{
-  
+  DBUtilities.insertByLevel(req.body,req.body.level)
 })
-
-utilityDB.insertByLevel({country:{name:"China",key:"CN"},
-                      state:{name:"FuckingDumbIcon",key:"FDIC"},
-                      institution:{name:"Fucking of Dumb",key:"FODDD"},
-                      building:{name:"fg of dumb icone asdjoge"}
-                   },3)
-
 
 app.listen("8080",process.env.IP,()=>{
   console.log("start running the server")
