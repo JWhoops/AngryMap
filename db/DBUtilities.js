@@ -51,7 +51,7 @@ const utilityDB = (() =>{
   const readDBbyRegexKey = (regexKey,schema,callback)=>{
     schema.find({key: new RegExp(regexKey,"i")},{_id:false,__v:false},
       (err,result)=>{
-          callback(result)
+            callback(result)
         });
   }
   //get current and next level
@@ -60,7 +60,8 @@ const utilityDB = (() =>{
           readDBbyRegexKey('^'+ queryKey,nextSchema,(fNext)=>{
             /*too lazy to create find by key using findOne
             use [0] to substitute*/
-            callback(fCurrent[0],fNext)
+            fCurrent = fCurrent[0]
+            callback(fCurrent,fNext)
           })
         })
   }
@@ -76,17 +77,13 @@ const utilityDB = (() =>{
         break
       case 11: //institution
         getCurrentAndNextLevel(queryKey,Institution,Building,callback)
+        break
       case 16: //building
         getCurrentAndNextLevel(queryKey,Building,Floor,callback)
         break
-      case 20: //floor
-        //i need to finish my paper by tuesday
-        break
-      case 25: //room
-        //so maybe i should work on that tomorrow
-        break
       default:
         //500 json
+        break
     }
   }
 
@@ -212,10 +209,10 @@ const replaceSpaceWithUnderscore = (str) => {
       })
       building.utilities = utility //assign utility to buildings
       })
-      // populateBuildings({name:"United States",key:"US"},
-      //                   {name:"Wisconsin",key:"WISC"},
-      //                   {name:"University of Wisconsin-Madison",key:"UWMAD"},
-      //                   buildings) //insert building list into database
+      populateBuildings({name:"United States",key:"US"},
+                        {name:"Wisconsin",key:"UWWISC"},
+                        {name:"University of Wisconsin-Madison",key:"UWWISCUWMAD"},
+                        buildings) //insert building list into database
     }
 
   return{getJSONByKey,insertByLevel}

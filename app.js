@@ -17,7 +17,7 @@ app.get('/favicon.ico', (req, res) => res.status(204));
 app.get("/:location",(req,res)=>{
   //get key from url and render json
   DBUtilities.getJSONByKey(req.params.location.toString(),(current,next)=>{
-    res.jsonp({current,next})
+      res.jsonp({current,next})
   })
 })
 
