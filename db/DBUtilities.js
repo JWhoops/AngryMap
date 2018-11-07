@@ -208,12 +208,15 @@ const replaceSpaceWithUnderscore = (str) => {
         }
       })
       building.utilities = utility //assign utility to buildings
+      building.key = "USWISCUWMAD"+building.key
       })
       populateBuildings({name:"United States",key:"US"},
-                        {name:"Wisconsin",key:"UWWISC"},
-                        {name:"University of Wisconsin-Madison",key:"UWWISCUWMAD"},
+                        {name:"Wisconsin",key:"USWISC"},
+                        {name:"University of Wisconsin-Madison",key:"USWISCUWMAD"},
                         buildings) //insert building list into database
     }
+
+    // populateMadison()
 
   return{getJSONByKey,insertByLevel}
 })()
