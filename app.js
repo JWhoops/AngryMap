@@ -11,7 +11,7 @@ app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 
 //fking dumb icon
-// app.get('/favicon.ico', (req, res) => res.status(204));
+app.get('/favicon.ico', (req, res) => res.status(204));
 
 //location route
 app.get("/:location",(req,res)=>{
@@ -38,6 +38,6 @@ app.post("/location", (req,res)=>{
   })
 })
 
-app.listen("8080",process.env.IP,()=>{
+app.listen(process.env.PORT,process.env.IP,()=>{
   console.log("start running the server")
 })
