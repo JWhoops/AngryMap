@@ -183,7 +183,8 @@ const replaceSpaceWithUnderscore = (str) => {
                             lat:bdObj.coordinates[1],
                             lng:bdObj.coordinates[0],
                             name:bdObj.name,
-                            key:bdObj.key})
+                            key:bdObj.key,
+                            image:bdObj.image})
       bd.save()
     })
   }
@@ -194,16 +195,19 @@ const replaceSpaceWithUnderscore = (str) => {
     let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
     let printers = getJsonObj('./test_jsons/Printers.json').printers
     buildings.forEach((building)=>{
+      building.image = "http://cdn.redalertpolitics.com/files/2017/10/UW-Madison-lincoln.jpg"
       let utility = []
       microwaves.forEach((microwave)=>{
         if(building.key === microwave.key){
           //push utilites into building's utilities array using same key
+          microwave.image = "http://cdn.wrn.com/wp-content/uploads/2016/01/Motion-W.jpg"
           utility.push(microwave)
         }
       })
       printers.forEach((printer)=>{
         if(building.key === printer.key){
           //push utilites into building's utilities array using same key
+          printer.image = "http://cdn.wrn.com/wp-content/uploads/2016/01/Motion-W.jpg"
           utility.push(printer)
         }
       })
@@ -216,7 +220,7 @@ const replaceSpaceWithUnderscore = (str) => {
                         buildings) //insert building list into database
     }
 
-    // populateMadison()
+    populateMadison()
 
   return{getJSONByKey,insertByLevel}
 })()

@@ -1,6 +1,11 @@
-<h1>Add a New Location</h1>
-
-<form action="/location" method="POST">
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+</head>
+<body>
+<h1>Upload a New Location</h1>
+<form action="/location" method="POST" enctype="multipart/form-data">
   <input type="text" name="country[name]" placeholder="country" required>
   <input type="text" name="country[key]" placeholder="country key" required>
   <input type="text" name="state[name]" placeholder="state" required>
@@ -8,8 +13,11 @@
   <input type="text" name="institution[name]" placeholder="institution" required>
   <input type="text" name="institution[key]" placeholder="institution key" required>
   <input type="text" name="building[name]" placeholder="building" required>
-   <input type="number" name="level"
-           placeholder="level" step="1" />
+  <input type="file" id="image" name="image" accept="image/*">
+  <input type="number" name="level" placeholder="level" step="1"/>
   <button>Upload</button>
 </form>
 <a href="/">Go Back</a>
+</body>
+</html>
+

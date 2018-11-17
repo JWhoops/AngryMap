@@ -2,7 +2,7 @@ var mongoose = require("mongoose")
 
 //utility schema -> building schema
 var UtilitySchema = new mongoose.Schema({
-  type: String, key:String, description:String});
+  type:String,key:String,description:String,image:String});
 
 //building schema config
 var buildingSchema = new mongoose.Schema({
@@ -10,6 +10,7 @@ var buildingSchema = new mongoose.Schema({
   key:String, //key for this building
   lng:Number, //latitude
   lat:Number, //longtitude
-  utilities:[UtilitySchema] //utility field
+  utilities:[UtilitySchema], //utility field
+  image:String
 })
 module.exports = mongoose.model("Building",buildingSchema)
