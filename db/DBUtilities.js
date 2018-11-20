@@ -161,14 +161,23 @@ const utilityDB = (() =>{
         return result;
 }
 
-const replaceSpaceWithUnderscore = (str) => {
-	var result = "";
-	for(var i=0;i<str.length;i++){
-		var c = str.charAt(i);
-		result+=(c==' '?"_":c);
-	}
-	return result;
-}
+  const replaceSpaceWithUnderscore = (str) => {
+  	var result = "";
+  	for(var i=0;i<str.length;i++){
+  		var c = str.charAt(i);
+  		result+=(c==' '?"_":c);
+  	}
+  	return result;
+  }
+
+  const insertUtility = (key,utility,callback)=>{
+    Building.findOne({"key":key},(err,result)=>{        
+      result.utilities.push(utility)
+      result.save((err)=>{
+        callback(result)
+      })
+    });
+  }
 
   //used to populate buildings
   const populateBuildings = (countryObj,stateObj,institutionObj,bdObjs) => {
@@ -189,7 +198,7 @@ const replaceSpaceWithUnderscore = (str) => {
     })
   }
 
-  const populateMadison = () => {
+  const populateMadison = ()=>{
     //read buildings and microwaves json files
     let buildings =  getJsonObj('./test_jsons/buildings.json').buildings
     let microwaves = getJsonObj('./test_jsons/Microwaves.json').microwaves
@@ -212,7 +221,6 @@ const replaceSpaceWithUnderscore = (str) => {
         }
       })
       building.utilities = utility //assign utility to buildings
-      building.key = "USWISCUWMAD"+building.key
       })
       populateBuildings({name:"United States",key:"US"},
                         {name:"Wisconsin",key:"USWISC"},
@@ -220,9 +228,9 @@ const replaceSpaceWithUnderscore = (str) => {
                         buildings) //insert building list into database
     }
 
-     // populateMadison()
+    // populateMadison()
 
-  return{getJSONByKey,insertByLevel}
+  return{getJSONByKey,insertByLevel,insertUtility}
 })()
 
 module.exports = utilityDB

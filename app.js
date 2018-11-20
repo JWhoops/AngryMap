@@ -28,7 +28,7 @@ var imageFilter = function (req, file, cb) {
 var upload = multer({ storage: storage, fileFilter: imageFilter})
 
 cloudinary.config({ 
-  cloud_name: 'ddvtkhtsp', 
+  cloud_name: 'madmap', 
   api_key: "878488145471865", 
   api_secret: "6rjAFhuPOISffrw5BNCJUxr6Zug"
 });
@@ -51,7 +51,28 @@ app.get("/",(req,res)=>{
 
 //new page route
 app.get("/location/new", (req,res)=>{
-  res.render("new")
+  DBUtilities.getJSONByKey("USWISCUWMAD",(current,next)=>{
+      res.render('new',{bds:next})
+  })
+})
+
+app.post("/utility/new",upload.single('image'),(req,res)=>{
+  if(req.file){
+    cloudinary.uploader.upload(req.file.path, function(result) {
+        // add cloudinary url for the image to the object under image property
+        let utility = req.body.utility
+            utility.image = result.secure_url
+        DBUtilities.insertUtility(req.body.key,utility,(bd)=>{
+          res.redirect("/")
+        })
+    })
+  }else{
+      let utility = req.body.utility
+      utility.image = "http://college.koreadaily.com/wp-content/uploads/2018/03/BascHill_autumn16_5788-1600x500.jpg"
+      DBUtilities.insertUtility(req.body.key,utility,(bd)=>{
+          res.redirect("/")
+      })
+  }
 })
 
 //location create route

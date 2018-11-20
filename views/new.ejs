@@ -22,6 +22,26 @@
   </select>
   <button>Upload</button>
 </form>
+
+<h1>Insert Utility for UW-Madison</h1>
+<form action="/utility/new" method="POST" enctype="multipart/form-data">
+  <select name="key">
+    <%bds.forEach((bd)=>{%>
+    <option value="<%=bd.key%>"><%=bd.name%></option>
+  <%})%>
+  </select>
+  <select name="utility[type]">
+    <option value="Microwave">Microwave</option>
+    <option value="Printer">Printer</option>
+  </select>
+  <input type="file" class="four" id="image" name="image" accept="image/*">
+  Description:
+  <textarea name="utility[description]"></textarea>
+  <button>Upload</button>
+</form>
+
+
+
 <a href="/">Go Back</a>
 <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
