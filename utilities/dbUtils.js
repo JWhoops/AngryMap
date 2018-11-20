@@ -44,6 +44,7 @@ const utilityDB = (() =>{
   //read based on key and schema
   const readDBbyKey = (queryKey,schema,callback)=>{
     schema.find({key:queryKey},{_id:false,__v:false},(err,result)=>{
+          if(err) console.log(er)
           callback(result)
         });
   }
@@ -51,6 +52,7 @@ const utilityDB = (() =>{
   const readDBbyRegexKey = (regexKey,schema,callback)=>{
     schema.find({key: new RegExp(regexKey,"i")},{_id:false,__v:false},
       (err,result)=>{
+            if(err) console.log(err)
             callback(result)
         });
   }
@@ -169,11 +171,12 @@ const utilityDB = (() =>{
   	}
   	return result;
   }
-
+//insert utility for buildings
   const insertUtility = (key,utility,callback)=>{
     Building.findOne({"key":key},(err,result)=>{        
       result.utilities.push(utility)
       result.save((err)=>{
+        if(err) console.log(err)
         callback(result)
       })
     });
@@ -220,7 +223,9 @@ const utilityDB = (() =>{
           utility.push(printer)
         }
       })
+
       building.utilities = utility //assign utility to buildings
+      building.key = "USWISCUWMAD"+building.key
       })
       populateBuildings({name:"United States",key:"US"},
                         {name:"Wisconsin",key:"USWISC"},

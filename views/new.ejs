@@ -3,7 +3,7 @@
 <head>
   <title></title>
 </head>
-<body>
+<body style="width: 100%;">
 <h1>Upload a New Location</h1>
 <form id="form" action="/location" method="POST" enctype="multipart/form-data">
   <input  type="text" name="country[name]" placeholder="country" required>
@@ -24,24 +24,27 @@
 </form>
 
 <h1>Insert Utility for UW-Madison</h1>
-<form action="/utility/new" method="POST" enctype="multipart/form-data">
+<form action="/utility" method="POST" enctype="multipart/form-data">
+  Building:<br>
   <select name="key">
     <%bds.forEach((bd)=>{%>
     <option value="<%=bd.key%>"><%=bd.name%></option>
   <%})%>
   </select>
+  <br><br>
+  Utility Type:<br>
   <select name="utility[type]">
     <option value="Microwave">Microwave</option>
     <option value="Printer">Printer</option>
   </select>
+  <br><br>Image:<br>
   <input type="file" class="four" id="image" name="image" accept="image/*">
-  Description:
+  <br><br>
+  Description:<br>
   <textarea name="utility[description]"></textarea>
+  <br>
   <button>Upload</button>
 </form>
-
-
-
 <a href="/">Go Back</a>
 <script
       src="https://code.jquery.com/jquery-3.3.1.min.js"
