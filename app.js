@@ -62,7 +62,7 @@ app.post("/location",upload.single('image'),(req,res)=>{
         // add cloudinary url for the image to the object under image property
         req.body.building.image = result.secure_url;
         DBUtilities.insertByLevel(req.body,req.body.level,(insertedObj)=>{
-        res.jsonp(insertedObj)
+          res.jsonp(insertedObj)
       })
     })
   }else{
@@ -72,7 +72,6 @@ app.post("/location",upload.single('image'),(req,res)=>{
     })
   }
 })
-
 
 app.listen(process.env.PORT,process.env.IP,()=>{
   console.log("start running the server")

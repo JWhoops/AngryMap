@@ -5,19 +5,52 @@
 </head>
 <body>
 <h1>Upload a New Location</h1>
-<form action="/location" method="POST" enctype="multipart/form-data">
-  <input type="text" name="country[name]" placeholder="country" required>
-  <input type="text" name="country[key]" placeholder="country key" required>
-  <input type="text" name="state[name]" placeholder="state" required>
-  <input type="text" name="state[key]" placeholder="state key" required>
-  <input type="text" name="institution[name]" placeholder="institution" required>
-  <input type="text" name="institution[key]" placeholder="institution key" required>
-  <input type="text" name="building[name]" placeholder="building" required>
-  <input type="file" id="image" name="image" accept="image/*">
-  <input type="number" name="level" placeholder="level" step="1"/>
+<form id="form" action="/location" method="POST" enctype="multipart/form-data">
+  <input  type="text" name="country[name]" placeholder="country" required>
+  <input  type="text" name="country[key]" placeholder="country key" required>
+  <input style="display: none" type="text" class="two three four"name="state[name]" placeholder="state" required>
+  <input style="display: none" type="text" class="two three four" name="state[key]" placeholder="state key" required>
+  <input style="display: none" type="text" class="three four" name="institution[name]" placeholder="institution" required>
+  <input style="display: none" type="text" class="three four" name="institution[key]" placeholder="institution key" required>
+  <input style="display: none" type="text" class="four" name="building[name]" placeholder="building" required>
+  <input style="display: none" type="file" class="four" id="image" name="image" accept="image/*">
+  <select id="levelList" name="level">
+    <option value="1">country</option>
+    <option value="2">state</option>
+    <option value="3">institution</option>
+    <option value="4">building</option>
+  </select>
   <button>Upload</button>
 </form>
 <a href="/">Go Back</a>
+<script
+      src="https://code.jquery.com/jquery-3.3.1.min.js"
+      integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+      crossorigin="anonymous"></script>
+<script type="text/javascript">
+  $("#levelList").change(function(e){
+    let level = parseInt($(this).val())
+    switch(level){
+      case 1:
+        $(".three").css("display","none")
+        $(".four").css("display","none")
+        $(".two").css("display","none")      
+      break
+      case 2:
+        $(".three").css("display","none")
+        $(".four").css("display","none")
+        $(".two").css("display","block")
+      break;
+      case 3:
+        $(".four").css("display","none")   
+        $(".three").css("display","block")
+      break;
+      case 4:
+        $(".four").css("display","block")
+      break;
+    }
+  })
+</script>
 </body>
 </html>
 

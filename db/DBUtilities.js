@@ -220,7 +220,7 @@ const replaceSpaceWithUnderscore = (str) => {
                         buildings) //insert building list into database
     }
 
-    populateMadison()
+     // populateMadison()
 
   return{getJSONByKey,insertByLevel}
 })()
