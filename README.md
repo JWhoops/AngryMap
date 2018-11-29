@@ -1,8 +1,6 @@
 TODO:
 <ol>
-<li>finish path-finding(use GoogleMap API)</li>
-<li>finish detail page</li>
-<li>connect with cloudinary</li>
+<li>Need to finish the auth part</li>
 <li>another db for unverified data</li>
 <li>add update/remove functions</li>
 <li>add validation on new post(will do for front end)</li>

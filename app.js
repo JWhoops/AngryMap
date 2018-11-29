@@ -1,10 +1,34 @@
 const express      = require("express"),
       bodyParser   = require("body-parser"),
       DBUtilities  = require("./utilities/dbUtils"),
-      imgUtilities = require("./utilities/imageUtils")
+      imgUtilities = require("./utilities/imageUtils"),
+      passport     = require("passport"),
+      LocalStrategy= require("passport-local"),
+      User   	   = require("./models/user")     
       
+//routes
+const authRoutes = require("./routes/auth")
+
 //app configs
 const app = express()
+
+//some secret values
+const my_secret = "Desperate for Half-Life 3, Please Gabe!!!!!!"
+
+app.use(require("express-session")({
+  secret: my_secret,
+  resave: false,
+  saveUninitialized: false
+}))
+
+//passport config
+app.use(passport.initialize())
+app.use(passport.session())
+
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.set('view engine', 'ejs')
 app.use(bodyParser.urlencoded({extended: true})) //parser object from body
@@ -53,6 +77,16 @@ app.post("/location",imgUtilities.uploadByType('image'),(req,res)=>{
   }) 
 })
 
-app.listen(process.env.PORT,process.env.IP,()=>{
+//auth routers
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user
+	next()
+	})
+
+app.use(authRoutes)
+
+//app.listen(process.env.PORT,process.env.IP,()=>{
+ 
+app.listen(8080,()=>{
   console.log("start running the server")
 })
