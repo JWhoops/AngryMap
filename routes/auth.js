@@ -30,7 +30,7 @@ router.post("/register", (req,res)=>{
 
 //login
 router.get("/login",middleware.notLoggedIn,(req,res)=>{
-  res.render("./users/login")
+  res.render(".views/users/login")
 })
 
 //login logic
