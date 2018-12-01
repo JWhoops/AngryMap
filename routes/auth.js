@@ -1,7 +1,8 @@
 const express = require("express"),
       router  = express.Router(),
       passport= require("passport"),
-      middleware = require("../middleware");
+      middleware = require("../middleware"),
+      User = require("../models/user");
 
 //index routes
 router.get("/",(req,res)=>{
@@ -11,7 +12,7 @@ router.get("/",(req,res)=>{
 //Auth routes~~~~~~~~~~i~~~~~~~~~~~~~~~~~~~~~
 //reigister routes
 router.get("/register", (req,res)=>{
-  res.render("./users/register");
+  res.render("../views/users/register");
 })
 
 router.post("/register", (req,res)=>{
@@ -30,7 +31,7 @@ router.post("/register", (req,res)=>{
 
 //login
 router.get("/login",middleware.notLoggedIn,(req,res)=>{
-  res.render(".views/users/login")
+  res.render("../views/users/login")
 })
 
 //login logic

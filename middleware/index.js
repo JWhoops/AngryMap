@@ -12,7 +12,7 @@ middlewareObj.isLoggedIn = function(req, res, next){
 //check if any user in session
 middlewareObj.notLoggedIn = function(req, res, next){
     if(!req.user){
-        return next();
+	return next();
     }
     res.redirect("/")
 }

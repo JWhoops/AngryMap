@@ -37,7 +37,7 @@ app.use(bodyParser.urlencoded({extended: true})) //parser object from body
 app.get('/favicon.ico', (req, res) => res.status(204));
 
 //location route
-app.get("/:location",(req,res)=>{
+app.get("/get/:location",(req,res)=>{
   //get key from url and render json
   DBUtilities.getJSONByKey(req.params.location.toString(),(current,next)=>{
       res.jsonp({current,next})
